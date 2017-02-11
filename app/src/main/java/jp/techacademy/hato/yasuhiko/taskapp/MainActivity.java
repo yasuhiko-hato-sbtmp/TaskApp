@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private RealmChangeListener mRealmListener = new RealmChangeListener() {
         @Override
         public void onChange(Object element) {
+            Log.d("onChange", "something changed in realm");
             reloadListView();
         }
     };
@@ -112,7 +114,8 @@ public class MainActivity extends AppCompatActivity {
                         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                         alarmManager.cancel(resultPendingIntent);
 
-                        reloadListView();
+                        Log.d("Long tapped", "deleted");
+                        //reloadListView(); // If call this here, to be halted.
                     }
                 });
                 builder.setNegativeButton("CANCEL", null);
@@ -130,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
     private void reloadListView() {
 
         ArrayList<Task> taskArrayList = new ArrayList<>();
+        Log.d("reloadListView", String.valueOf(mTaskRealmResults.size()));
 
         for (int i = 0; i < mTaskRealmResults.size(); i++) {
             Task task = new Task();

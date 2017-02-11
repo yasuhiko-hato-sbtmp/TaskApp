@@ -107,7 +107,6 @@ public class InputActivity extends AppCompatActivity {
             mDay = calendar.get(Calendar.DAY_OF_MONTH);
             mHour = calendar.get(Calendar.HOUR_OF_DAY);
             mMinute = calendar.get(Calendar.MINUTE);
-            Log.d("InputActivity", String.valueOf(mHour) + ":" + String.valueOf(mMinute));
         } else {
             // 更新の場合
             mTitleEdit.setText(mTask.getTitle());
