@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mListView;
     private TaskAdapter mTaskAdapter;
     private Spinner mSpinner;
+    ArrayList<String> mCategoryArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, InputActivity.class);
+                if(mCategoryArrayList != null){
+                    String[] categories = new String[mCategoryArrayList.size()];
+                    for(int i = 0; i < mCategoryArrayList.size(); i++){
+                        categories[i] = mCategoryArrayList.get(i);
+                    }
+                    intent.putExtra("CATEGORIES", categories);
+                }
                 startActivity(intent);
             }
         });
@@ -202,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mSpinner.setAdapter(adapter);
+        mCategoryArrayList = categoryArrayList;
     }
 
 

@@ -10,17 +10,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class InputActivity extends AppCompatActivity {
 
@@ -28,6 +34,7 @@ public class InputActivity extends AppCompatActivity {
     private Button mDateButton, mTimeButton;
     private EditText mTitleEdit, mContentEdit, mCategoryEdit;
     private Task mTask;
+    private Spinner mSpinner;
     private View.OnClickListener mOnDateClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -75,6 +82,8 @@ public class InputActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
+
+        String[] categories = getIntent().getStringArrayExtra("CATEGORIES");
 
         // ActionBarを設定する
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -127,7 +136,43 @@ public class InputActivity extends AppCompatActivity {
             mDateButton.setText(dateString);
             mTimeButton.setText(timeString);
         }
+
+
+        mSpinner = (Spinner)findViewById(R.id.category_edit_spinner);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                String item = (String)adapterView.getItemAtPosition(position);
+                Log.d("Spinner", item);
+                if(!item.equals("")){
+                    mCategoryEdit.setText(item);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // nothing selected
+            }
+        });
+        reloadSpinner(categories);
     }
+
+    private void reloadSpinner(String[] categories){
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        adapter.add("");
+        if(categories != null) {
+            for(int i = 0; i < categories.length; i++){
+                if(!categories[i].equals(getString(R.string.spinner_category_all))){
+                    adapter.add(categories[i]);
+                }
+            }
+        }
+        mSpinner.setAdapter(adapter);
+    }
+
+
 
     private void addTask() {
         Realm realm = Realm.getDefaultInstance();
