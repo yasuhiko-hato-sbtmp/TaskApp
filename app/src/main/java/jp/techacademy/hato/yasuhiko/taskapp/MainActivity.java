@@ -15,7 +15,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,10 +38,12 @@ public class MainActivity extends AppCompatActivity {
         public void onChange(Object element) {
             Log.d("onChange", "something changed in realm");
             reloadListView();
+            reloadSpinner();
         }
     };
     private ListView mListView;
     private TaskAdapter mTaskAdapter;
+    private Spinner mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +131,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        mSpinner = (Spinner)findViewById(R.id.category_spinner);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                String item = (String)adapterView.getItemAtPosition(position);
+                Log.d("Spinner", item);
+                if(item.equals("All tasks")){
+                    mTaskRealmResults = mRealm.where(Task.class).findAll();
+                    mTaskRealmResults.sort("date", Sort.DESCENDING);
+                }
+                else {
+                    mTaskRealmResults = mRealm.where(Task.class).equalTo("category", item).findAll();
+                    mTaskRealmResults.sort("date", Sort.DESCENDING);
+                }
+                reloadListView();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // nothing selected
+            }
+        });
+
         reloadListView();
+        reloadSpinner();
     }
 
     private void reloadListView() {
@@ -140,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
             task.setId(mTaskRealmResults.get(i).getId());
             task.setTitle(mTaskRealmResults.get(i).getTitle());
+            task.setCategory(mTaskRealmResults.get(i).getCategory());
             task.setContents(mTaskRealmResults.get(i).getContents());
             task.setDate(mTaskRealmResults.get(i).getDate());
 
@@ -149,7 +179,31 @@ public class MainActivity extends AppCompatActivity {
         mTaskAdapter.setTaskArrayList(taskArrayList);
         mListView.setAdapter(mTaskAdapter);
         mTaskAdapter.notifyDataSetChanged();
+
+        //reloadSpinner();
     }
+
+    /**
+     * Reload a spinner for category selection
+     */
+    private void reloadSpinner(){
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        ArrayList<String> categoryArrayList = new ArrayList<>();
+        categoryArrayList.add(getString(R.string.spinner_category_all));
+        adapter.add(getString(R.string.spinner_category_all));
+        for (int i = 0; i < mTaskRealmResults.size(); i++) {
+            String category = mTaskRealmResults.get(i).getCategory();
+            if(!categoryArrayList.contains(category)){
+                categoryArrayList.add(category);
+                adapter.add(category);
+            }
+        }
+
+        mSpinner.setAdapter(adapter);
+    }
+
 
     @Override
     protected void onDestroy() {
