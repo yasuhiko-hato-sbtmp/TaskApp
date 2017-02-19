@@ -58,10 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, InputActivity.class);
                 if(mCategoryArrayList != null){
-                    String[] categories = new String[mCategoryArrayList.size()];
-                    for(int i = 0; i < mCategoryArrayList.size(); i++){
-                        categories[i] = mCategoryArrayList.get(i);
-                    }
+                    String[] categories = getAllCategories();
                     intent.putExtra("CATEGORIES", categories);
                 }
                 startActivity(intent);
@@ -87,7 +84,10 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, InputActivity.class);
                 intent.putExtra(EXTRA_TASK, task.getId());
-
+                if(mCategoryArrayList != null){
+                    String[] categories = getAllCategories();
+                    intent.putExtra("CATEGORIES", categories);
+                }
                 startActivity(intent);
             }
         });
@@ -168,10 +168,20 @@ public class MainActivity extends AppCompatActivity {
         reloadSpinner();
     }
 
+
+    private String[] getAllCategories(){
+        String[] categories = new String[mCategoryArrayList.size()];
+        for(int i = 0; i < mCategoryArrayList.size(); i++){
+            categories[i] = mCategoryArrayList.get(i);
+        }
+        return categories;
+    }
+
+
     private void reloadListView() {
 
         ArrayList<Task> taskArrayList = new ArrayList<>();
-        Log.d("reloadListView", String.valueOf(mTaskRealmResults.size()));
+        //Log.d("reloadListView", String.valueOf(mTaskRealmResults.size()));
 
         for (int i = 0; i < mTaskRealmResults.size(); i++) {
             Task task = new Task();
@@ -196,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
      * Reload a spinner for category selection
      */
     private void reloadSpinner(){
+        Log.d("reloadSpinner", "reloadSpinner called");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="タイトル" />
+
     <EditText
         android:id="@+id/content_edit_text"
         android:layout_width="match_parent"
@@ -25,45 +25,54 @@
         android:layout_below="@id/title_edit_text"
         android:hint="内容" />
 
-    <EditText
-        android:id="@+id/category_edit_text"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:id="@+id/category_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/content_edit_text"
-        android:hint="カテゴリ" />
-    <Spinner
-        android:layout_width="96dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/category_edit_spinner"
-        android:layout_below="@id/content_edit_text"
-        android:layout_toRightOf="@id/category_edit_text"
-        android:layout_alignParentRight="true"
-        />
+        android:orientation="horizontal"
+        android:layout_below="@id/content_edit_text">
+
+        <EditText
+            android:id="@+id/category_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:hint="カテゴリ" />
+
+        <Spinner
+            android:id="@+id/category_edit_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
 
     <Button
         android:id="@+id/date_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/category_edit_text"
         android:layout_alignParentStart="true"
+        android:layout_below="@id/category_layout"
         android:layout_toLeftOf="@+id/times_button"
-        android:text="----/--/--"
-        style="@style/Widget.AppCompat.Button.Borderless" />
+        android:text="----/--/--" />
+
     <Button
         android:id="@id/times_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/category_edit_text"
         android:layout_alignParentRight="true"
-        android:text="--:--"
-        style="@style/Widget.AppCompat.Button.Borderless" />
+        android:layout_below="@id/category_layout"
+        android:text="--:--" />
+
     <Button
         android:id="@+id/done_button"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/times_button"
         android:layout_alignParentRight="true"
+        android:layout_below="@id/times_button"
         android:text="決定" />
 
 </RelativeLayout>
